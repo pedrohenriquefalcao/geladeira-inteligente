@@ -19,7 +19,7 @@ public class FoodItemController {
     }
 
 
-    @PutMapping("/salvar")
+    @PostMapping("/salvar")
     public ResponseEntity<FoodItemModel> adicionarNovo(@RequestBody FoodItemModel foodItemModel) {
         FoodItemModel salvo = foodItemService.adicionarFood(foodItemModel);
         return ResponseEntity.ok(salvo);
