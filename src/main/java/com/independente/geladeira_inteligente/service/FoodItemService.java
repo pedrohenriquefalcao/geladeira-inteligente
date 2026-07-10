@@ -16,8 +16,7 @@ public class FoodItemService {
         this.foodItemRepository = foodItemRepository;
     }
 
-    public FoodItemModel adicionarFood(FoodItemModel foodItemModel) {
-        FoodItemModel foodNovo = new FoodItemModel();
+    public FoodItemModel adicionarFood(FoodItemModel foodNovo) {
         return foodItemRepository.save(foodNovo);
     }
 
@@ -25,20 +24,15 @@ public class FoodItemService {
         return foodItemRepository.findAll();
     }
 
-    public FoodItemModel listarPorId(Long id) {
-        return foodItemRepository.findById(id).orElse(null);
+    public Optional<FoodItemModel> buscarPorId(Long id) {
+        return foodItemRepository.findById(id);
     }
 
-    public FoodItemModel alterarPorId(Long id, FoodItemModel foodItemAtualizado) {
-        Optional<FoodItemModel> foodItemModelOptional = foodItemRepository.findById(id);
-        if (foodItemModelOptional.isPresent()) {
-            foodItemAtualizado.setId(id);
-            return foodItemRepository.save(foodItemAtualizado);
-        }
-        return null;
+    public FoodItemModel atualizar(FoodItemModel foodItemAtualizado) {
+        return foodItemRepository.save(foodItemAtualizado);
     }
 
-    public void deletarPorId(Long id) {
+    public void excluir(Long id) {
         foodItemRepository.deleteById(id);
     }
 

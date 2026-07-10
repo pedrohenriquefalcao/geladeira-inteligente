@@ -4,10 +4,7 @@ import com.independente.geladeira_inteligente.model.FoodItemModel;
 import com.independente.geladeira_inteligente.service.FoodItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,33 +18,41 @@ public class FoodItemController {
         this.foodItemService = foodItemService;
     }
 
+
+    @PutMapping("/salvar")
     public ResponseEntity<FoodItemModel> adicionarNovo(@RequestBody FoodItemModel foodItemModel) {
         FoodItemModel salvo = foodItemService.adicionarFood(foodItemModel);
         return ResponseEntity.ok(salvo);
     }
 
+    @GetMapping("/listar/todos")
     public ResponseEntity<List<FoodItemModel>> listarTodos() {
         List<FoodItemModel> relacaoGeral = foodItemService.listarTodos();
         return ResponseEntity.ok(relacaoGeral);
     }
 
-    public ResponseEntity<?> listarPorId(@PathVariable Long id) {
-        FoodItemModel foodBuscado = foodItemService.listarPorId(id);
-        if (foodBuscado != null) {
-            return ResponseEntity.ok(foodBuscado);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Alimento de ID " + id + " não foi encontrado no sistema!");
+    @GetMapping("/listar/{id}")
+    public ResponseEntity<FoodItemModel> buscarPorId(@PathVariable Long id) {
+        return foodItemService.buscarPorId(id)
+                .map(food -> ResponseEntity.ok(food))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<?> deletarPorId(@PathVariable Long id) {
-        FoodItemModel foodBuscado = foodItemService.listarPorId(id);
-        if (foodBuscado != null) {
-            foodItemService.deletarPorId(id);
-            return ResponseEntity.ok("Alimento de ID " + id + " deletado!");
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Alimento de ID " + id + " não foi encontrado no sistema!");
+    @PutMapping("/alterar/{id}")
+    public ResponseEntity<FoodItemModel> atualizar(@RequestBody FoodItemModel foodItemModel, @PathVariable Long id) {
+        return foodItemService.buscarPorId(id)
+                .map(itemExistente -> {
+                    foodItemModel.setId(itemExistente.getId());
+                    FoodItemModel atualizado = foodItemService.atualizar(foodItemModel);
+                    return ResponseEntity.ok(atualizado);
+                }).orElse(ResponseEntity.notFound().build());
+
+    }
+
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        foodItemService.excluir(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
