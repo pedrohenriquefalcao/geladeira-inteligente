@@ -11,6 +11,7 @@ public enum CategoriaFood {
     MOLHOS_E_CONDIMENTOS, // Ketchup, mostarda, maionese, geleias
     SOBREMESAS,       // Doces, bolos, tortas, pudins
     OVOS,             // Ovos de galinha, codorna, etc.
-    SOBRAS
+    SOBRAS,
+    GRAOS
 
 }
