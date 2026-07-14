@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/food")
+@RequestMapping("/alimento")
 public class ItemAlimentoController {
 
-    private ItemAlimentoService itemAlimentoService;
+    private final ItemAlimentoService itemAlimentoService;
 
     public ItemAlimentoController(ItemAlimentoService itemAlimentoService) {
         this.itemAlimentoService = itemAlimentoService;
