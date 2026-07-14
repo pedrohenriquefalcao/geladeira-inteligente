@@ -1,6 +1,6 @@
 package com.independente.geladeira_inteligente.model;
 
-import com.independente.geladeira_inteligente.enums.CategoriaFood;
+import com.independente.geladeira_inteligente.enums.CategoriaAlimento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Table(name = "food_item")
 @NoArgsConstructor
 @AllArgsConstructor
-public class FoodItemModel {
+public class ItemAlimentoModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,17 +19,17 @@ public class FoodItemModel {
 
     private String nome;
 
-    private CategoriaFood categoria;
+    private CategoriaAlimento categoria;
 
     private Integer quantidade;
 
     private LocalDate validade;
 
-    public CategoriaFood getCategoria() {
+    public CategoriaAlimento getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(CategoriaFood categoria) {
+    public void setCategoria(CategoriaAlimento categoria) {
         this.categoria = categoria;
     }
 

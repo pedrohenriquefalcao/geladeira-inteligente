@@ -1,6 +1,6 @@
 package com.independente.geladeira_inteligente.enums;
 
-public enum CategoriaFood {
+public enum CategoriaAlimento {
 
     BEBIDAS,          // Sucos, refrigerantes, águas, cervejas
     LATICINIOS,        // Leite, queijos, iogurtes, manteiga
