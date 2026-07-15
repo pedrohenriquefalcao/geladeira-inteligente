@@ -2,7 +2,7 @@ package com.independente.geladeira_inteligente.controller;
 
 import com.independente.geladeira_inteligente.model.ItemAlimentoModel;
 import com.independente.geladeira_inteligente.repository.ItemAlimentoRepository;
-import com.independente.geladeira_inteligente.service.ChatGptService;
+import com.independente.geladeira_inteligente.service.llmService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/receita")
 public class ReceitaController {
 
-    private final ChatGptService chatGptService;
+    private final llmService llmService;
     private final ItemAlimentoRepository alimentoRepository;
 
-    public ReceitaController(ChatGptService chatGptService, ItemAlimentoRepository alimentoRepository) {
-        this.chatGptService = chatGptService;
+    public ReceitaController(llmService llmService, ItemAlimentoRepository alimentoRepository) {
+        this.llmService = llmService;
         this.alimentoRepository = alimentoRepository;
     }
 
@@ -37,6 +37,6 @@ public class ReceitaController {
                 .map(ItemAlimentoModel::getNome)
                 .collect(Collectors.joining(", "));
 
-        return chatGptService.obterSugestaoReceita(ingredientesDaGeladeira);
+        return llmService.obterSugestaoReceita(ingredientesDaGeladeira);
     }
 }

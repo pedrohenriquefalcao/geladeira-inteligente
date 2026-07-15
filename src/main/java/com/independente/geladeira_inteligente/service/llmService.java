@@ -6,19 +6,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 @Service
-public class ChatGptService {
+public class llmService {
 
     private final WebClient webClient;
 
     @Value("${API_KEY}")
     private String apiKey;
 
-    public ChatGptService(WebClient webClient) {
+    public llmService(WebClient webClient) {
         this.webClient = webClient;
     }
 
@@ -39,7 +40,7 @@ public class ChatGptService {
                 """.formatted(ingredientes);
 
         GptDTO payload = GptDTO.builder()
-                .model("llama3-8b-8192")
+                .model("llama-3.1-8b-instant")
                 .messages(List.of(new GptDTO.Message("user", prompt)))
                 .build();
 
@@ -50,8 +51,13 @@ public class ChatGptService {
                 .bodyValue(payload)
                 .retrieve()
                 .bodyToMono(String.class)
-                .onErrorResume(e -> {
-                    return Mono.just("Erro ao comunicar com a API de IA: " + e.getMessage());
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    String corpoDoErro = e.getResponseBodyAsString();
+                    System.err.println("ERRO DETALHADO DA GROQ: " + corpoDoErro);
+                    return Mono.just("Erro da API: " + corpoDoErro);
+                })
+                .onErrorResume(Exception.class, e -> {
+                    return Mono.just("Erro genérico: " + e.getMessage());
                 });
     }
 }
