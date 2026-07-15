@@ -19,6 +19,7 @@ public class ItemAlimentoModel {
 
     private String nome;
 
+    @Enumerated(EnumType.STRING)
     private CategoriaAlimento categoria;
 
     private Integer quantidade;
