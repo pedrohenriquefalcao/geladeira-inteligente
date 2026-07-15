@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 public class ChatGptService {
 
@@ -38,7 +40,7 @@ public class ChatGptService {
 
         GptDTO payload = GptDTO.builder()
                 .model("llama3-8b-8192")
-                .prompt(prompt)
+                .messages(List.of(new GptDTO.Message("user", prompt)))
                 .build();
 
         return this.webClient.post()
