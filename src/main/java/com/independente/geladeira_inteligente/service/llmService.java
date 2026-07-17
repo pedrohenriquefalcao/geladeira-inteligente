@@ -33,10 +33,12 @@ public class llmService {
                                 Crie uma receita criativa e saborosa utilizando prioritariamente os seguintes ingredientes: %s.
                 
                                 Siga as seguintes regras:
-                                1. Dê um nome chamativo para a receita.
-                                2. Liste o tempo de preparo estimado.
-                                3. Escreva o passo a passo de forma simples e direta.
-                                4. Se algum ingrediente for muito incompatível, sinta-se livre para sugerir um substituto simples.
+                                1. Quero que você justifique sempre o por que de ter escolhido a receita (exemplo: como você tem {ingrediente} e {ingrediente}, podemos fazer esta receita).
+                                2. Liste todos os ingredientes que você encontrou na relação de dados. Nome e quantidade.
+                                3. Dê um nome chamativo para a receita.
+                                4. Liste o tempo de preparo estimado.
+                                5. Escreva o passo a passo de forma simples e direta.
+                                6. Se algum ingrediente for muito incompatível, sinta-se livre para sugerir um substituto simples.
                 """.formatted(ingredientes);
 
         GptDTO payload = GptDTO.builder()
