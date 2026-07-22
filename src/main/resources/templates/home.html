@@ -4,87 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geladeira Inteligente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🧊 Geladeira Inteligente</h1>
+<div class="container">
+    <header>
+        <div class="header-title">
+            <h1>Geladeira Inteligente</h1>
             <p>Gerenciador inteligente de alimentos da sua geladeira</p>
-            <div class="header-actions">
-                <button class="btn-success" onclick="gerarReceita()">📖 Gerar Receita com meus Ingredientes</button>
-            </div>
-        </header>
+        </div>
+        <div class="header-actions">
+            <button class="btn-success" onclick="gerarReceita()">
+                <span class="icon">📖</span> Gerar Receita com meus Ingredientes
+            </button>
+        </div>
+    </header>
 
-        <div class="main-content">
-            <!-- Seção de Formulário -->
-            <div class="card">
-                <h2>Adicionar Alimento</h2>
-                <div id="formAlert" class="alert"></div>
-                
-                <form id="alimentoForm">
-                    <div class="form-group">
-                        <label for="nome">Nome do Alimento *</label>
-                        <input type="text" id="nome" name="nome" required>
-                    </div>
+    <div class="main-content">
+        <div class="card">
+            <h2>Adicionar Alimento</h2>
+            <div id="formAlert" class="alert"></div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="categoria">Categoria *</label>
-                            <select id="categoria" name="categoria" required>
-                                <option value="">Selecione uma categoria</option>
-                                <option value="FRUTAS">Frutas</option>
-                                <option value="VERDURAS">Verduras</option>
-                                <option value="PROTEINAS">Proteínas</option>
-                                <option value="LATICINIO">Laticínios</option>
-                                <option value="BEBIDAS">Bebidas</option>
-                                <option value="CONGELADOS">Congelados</option>
-                                <option value="OUTROS">Outros</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="quantidade">Quantidade *</label>
-                            <input type="number" id="quantidade" name="quantidade" min="1" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="validade">Data de Validade *</label>
-                        <input type="date" id="validade" name="validade" required>
-                    </div>
-
-                    <button type="submit" class="btn-primary btn-submit">Adicionar Alimento</button>
-                    <button type="button" class="btn-secondary btn-submit" onclick="limparFormulario()" style="margin-top: 5px;">Limpar</button>
-                </form>
-            </div>
-
-            <!-- Seção de Lista -->
-            <div class="card">
-                <h2>Meus Alimentos</h2>
-                <div id="listAlert" class="alert"></div>
-                <div id="loadingList" class="loading">
-                    <div class="spinner"></div>
-                    <p>Carregando...</p>
+            <form id="alimentoForm">
+                <div class="form-group">
+                    <label for="nome">Nome do Alimento *</label>
+                    <input type="text" id="nome" name="nome" placeholder="Ex: Maçã Fuji" required>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="categoria">Categoria *</label>
+                        <select id="categoria" name="categoria" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="FRUTAS">Frutas</option>
+                            <option value="VERDURAS">Verduras</option>
+                            <option value="PROTEINAS">Proteínas</option>
+                            <option value="LATICINIO">Laticínios</option>
+                            <option value="BEBIDAS">Bebidas</option>
+                            <option value="CONGELADOS">Congelados</option>
+                            <option value="OUTROS">Outros</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantidade">Quantidade *</label>
+                        <input type="number" id="quantidade" name="quantidade" min="1" placeholder="Ex: 2" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="validade">Data de Validade *</label>
+                    <input type="date" id="validade" name="validade" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="limparFormulario()">Limpar</button>
+                    <button type="submit" class="btn-primary">Salvar Alimento</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Meus Alimentos</h2>
+            <div id="listAlert" class="alert"></div>
+            <div id="loadingList" class="loading">
+                <div class="spinner"></div>
+                <p>Buscando na geladeira...</p>
+            </div>
+            <div class="table-container">
                 <div id="alimentosList"></div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal para exibir receita -->
-    <div id="receitaModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="fecharModalReceita()">&times;</span>
+<div id="receitaModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
             <h2>📖 Receita Sugerida</h2>
-            <div id="loadingReceita" class="loading">
-                <div class="spinner"></div>
-                <p>Gerando receita...</p>
-            </div>
-            <div id="receitaContent"></div>
+            <span class="close" onclick="fecharModalReceita()">&times;</span>
         </div>
+        <div id="loadingReceita" class="loading">
+            <div class="spinner"></div>
+            <p>O Chef está pensando...</p>
+        </div>
+        <div id="receitaContent"></div>
     </div>
+</div>
 
-    <script th:src="@{/js/home.js}"></script>
+<script th:src="@{/js/home.js}"></script>
 </body>
 </html>
