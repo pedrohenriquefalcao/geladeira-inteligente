@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
+
 
 import java.util.List;
 
@@ -52,7 +54,14 @@ public class llmService {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                 .bodyValue(payload)
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(JsonNode.class)
+                .map(jsonNode -> jsonNode
+                        .path("choices")
+                        .path(0)
+                        .path("message")
+                        .path("content")
+                        .asText()
+                )
                 .onErrorResume(WebClientResponseException.class, e -> {
                     String corpoDoErro = e.getResponseBodyAsString();
                     System.err.println("ERRO DETALHADO DA GROQ: " + corpoDoErro);
