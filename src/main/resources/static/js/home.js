@@ -150,18 +150,41 @@ function editarAlimento(id) {
         });
 }
 
-function deletarAlimento(id) {
-    if (!confirm('Excluir este alimento da geladeira?')) return;
+let idParaDeletar = null;
 
-    fetch(`${API_BASE}/deletar/${id}`, { method: 'DELETE' })
-        .then(() => {
+function deletarAlimento(id) {
+    idParaDeletar = id;
+    document.getElementById('confirmModal').style.display = 'flex';
+}
+
+function fecharModalConfirmacao() {
+    document.getElementById('confirmModal').style.display = 'none';
+    idParaDeletar = null;
+}
+
+document.getElementById('btnConfirmarExclusao').addEventListener('click', () => {
+    if (!idParaDeletar) return;
+
+    fetch(`${API_BASE}/deletar/${idParaDeletar}`, { method: 'DELETE' })
+        .then(response => {
+            if (!response.ok) throw new Error('Erro ao comunicar com o servidor');
+
+            fecharModalConfirmacao();
             mostrarAlerta('listAlert', 'Alimento removido.', 'success');
             carregarAlimentos();
         })
         .catch(error => {
+            fecharModalConfirmacao();
             mostrarAlerta('listAlert', 'Erro ao excluir: ' + error.message, 'danger');
         });
-}
+});
+
+window.onclick = function(event) {
+    const confirmModal = document.getElementById('confirmModal');
+    if (event.target === confirmModal) {
+        fecharModalConfirmacao();
+    }
+};
 
 function limparFormulario() {
     document.getElementById('alimentoForm').reset();

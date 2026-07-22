@@ -104,6 +104,22 @@
     </div>
 </aside>
 
+<div id="confirmModal" class="modal">
+    <div class="modal-content confirm-modal">
+        <div class="modal-header">
+            <h2>⚠️ Confirmar Exclusão</h2>
+            <span class="close" onclick="fecharModalConfirmacao()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Tem certeza que deseja excluir este alimento da geladeira? Essa ação não pode ser desfeita.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="fecharModalConfirmacao()">Cancelar</button>
+            <button class="btn-danger" id="btnConfirmarExclusao">Sim, Excluir</button>
+        </div>
+    </div>
+</div>
+
 <script th:src="@{/js/home.js}"></script>
 </body>
 </html>

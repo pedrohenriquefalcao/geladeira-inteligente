@@ -377,4 +377,68 @@ tbody tr:hover {
     color: var(--text-main);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
-}}
+}
+
+/* Modal base styles */
+.modal {
+    position: fixed;
+    inset: 0; /* top:0; right:0; bottom:0; left:0 */
+    display: none; /* shown by JS with style.display = 'flex' */
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.35);
+    z-index: 1060;
+    padding: 1rem;
+}
+
+.modal .modal-content {
+    background: var(--surface);
+    border-radius: var(--radius);
+    max-width: 520px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.confirm-modal {
+    max-width: 450px;
+    text-align: center;
+}
+
+.confirm-modal .modal-header {
+    border-bottom: none;
+    padding-bottom: 0.5rem;
+    justify-content: center;
+    position: relative;
+}
+
+.confirm-modal .modal-header h2 {
+    color: var(--danger);
+    font-size: 1.25rem;
+}
+
+.confirm-modal .close {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+}
+
+.modal-body {
+    padding: 1rem 2rem 2rem;
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+.modal-footer {
+    background: var(--bg-color);
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+    border-radius: 0 0 var(--radius) var(--radius);
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-footer button {
+    min-width: 120px;
+}
