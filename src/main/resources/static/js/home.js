@@ -49,14 +49,32 @@ function exibirAlimentos(alimentos) {
             <tbody>
     `;
 
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
     alimentos.forEach(alimento => {
-        const dataValidade = new Date(alimento.validade).toLocaleDateString('pt-BR');
+        const [ano, mes, dia] = alimento.validade.split('-');
+        const dataValidadeObj = new Date(ano, mes - 1, dia);
+
+        const diffTempo = dataValidadeObj.getTime() - hoje.getTime();
+        const diffDias = Math.ceil(diffTempo / (1000 * 3600 * 24));
+
+        const dataFormatada = dataValidadeObj.toLocaleDateString('pt-BR');
+
+        let validadeHtml = dataFormatada;
+
+        if (diffDias < 0) {
+            validadeHtml = `<span class="badge-danger-date" title="Produto Vencido!">${dataFormatada}</span>`;
+        } else if (diffDias <= 7) {
+            validadeHtml = `<span class="badge-warning-date" title="Vence em ${diffDias} dia(s)">${dataFormatada}</span>`;
+        }
+
         html += `
             <tr>
                 <td style="font-weight: 500;">${alimento.nome}</td>
                 <td><span style="background: var(--bg-color); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; border: 1px solid var(--border);">${alimento.categoria}</span></td>
                 <td>${alimento.quantidade}</td>
-                <td>${dataValidade}</td>
+                <td>${validadeHtml}</td>
                 <td>
                     <div class="actions">
                         <button class="btn-edit" onclick="editarAlimento(${alimento.id})">Editar</button>
@@ -78,6 +96,16 @@ function handleFormSubmit(e) {
     const categoria = document.getElementById('categoria').value;
     const quantidade = parseInt(document.getElementById('quantidade').value);
     const validade = document.getElementById('validade').value;
+
+    const [ano, mes, dia] = validade.split('-');
+    const dataSelecionada = new Date(ano, mes - 1, dia);
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    if (dataSelecionada <= hoje) {
+        mostrarAlerta('formAlert', 'A data de validade deve ser MAIOR que o dia atual.', 'warning');
+        return;
+    }
 
     const alimento = { nome, categoria, quantidade, validade };
 
@@ -141,8 +169,19 @@ function limparFormulario() {
     document.getElementById('formAlert').style.display = 'none';
 }
 
+function abrirSidebarReceita() {
+    document.getElementById('chatSidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('open');
+
+    gerarReceita();
+}
+
+function fecharSidebarReceita() {
+    document.getElementById('chatSidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
 function gerarReceita() {
-    document.getElementById('receitaModal').style.display = 'flex';
     document.getElementById('loadingReceita').style.display = 'block';
     document.getElementById('receitaContent').innerHTML = '';
 
@@ -161,10 +200,6 @@ function gerarReceita() {
         });
 }
 
-function fecharModalReceita() {
-    document.getElementById('receitaModal').style.display = 'none';
-}
-
 function mostrarAlerta(elementId, mensagem, tipo) {
     const alerta = document.getElementById(elementId);
     alerta.textContent = mensagem;
@@ -181,10 +216,3 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
-
-window.onclick = function(event) {
-    const modal = document.getElementById('receitaModal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-};
