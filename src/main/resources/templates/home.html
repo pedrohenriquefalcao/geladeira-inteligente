@@ -15,8 +15,8 @@
             <p>Gerenciador inteligente de alimentos da sua geladeira</p>
         </div>
         <div class="header-actions">
-            <button class="btn-success" onclick="gerarReceita()">
-                <span class="icon">📖</span> Gerar Receita com meus Ingredientes
+            <button class="btn-success" onclick="abrirSidebarReceita()">
+                <span class="icon">✨</span> Gerar Receita com meus Ingredientes
             </button>
         </div>
     </header>
@@ -37,13 +37,18 @@
                         <label for="categoria">Categoria *</label>
                         <select id="categoria" name="categoria" required>
                             <option value="">Selecione uma categoria</option>
-                            <option value="FRUTAS">Frutas</option>
-                            <option value="VERDURAS">Verduras</option>
-                            <option value="PROTEINAS">Proteínas</option>
-                            <option value="LATICINIO">Laticínios</option>
                             <option value="BEBIDAS">Bebidas</option>
+                            <option value="LATICINIOS">Laticínios</option>
+                            <option value="HORTIFRUTI">Hortifrúti</option>
+                            <option value="CARNES E PEIXES">Carnes e Peixes</option>
+                            <option value="EMBUTIDOS">Embutidos</option>
                             <option value="CONGELADOS">Congelados</option>
-                            <option value="OUTROS">Outros</option>
+                            <option value="MOLHOS E CONDIMENTOS">Molhos e Condimentos</option>
+                            <option value="SOBREMESAS">Sobremesas</option>
+                            <option value="OVOS">Ovos</option>
+                            <option value="SOBRAS">Sobras</option>
+                            <option value="GRAOS">Grãos</option>
+                            <option value="FRUTAS">Frutas</option>
                         </select>
                     </div>
 
@@ -79,19 +84,25 @@
     </div>
 </div>
 
-<div id="receitaModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>📖 Receita Sugerida</h2>
-            <span class="close" onclick="fecharModalReceita()">&times;</span>
-        </div>
-        <div id="loadingReceita" class="loading">
-            <div class="spinner"></div>
-            <p>O Chef está pensando...</p>
-        </div>
-        <div id="receitaContent"></div>
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebarReceita()"></div>
+
+<aside id="chatSidebar" class="sidebar">
+    <div class="sidebar-header">
+        <h2>👨‍🍳 Chef IA</h2>
+        <span class="close-sidebar" onclick="fecharSidebarReceita()">&times;</span>
     </div>
-</div>
+    <div class="sidebar-content">
+        <div id="loadingReceita" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Analisando seus ingredientes e criando uma receita...</p>
+        </div>
+        <div id="receitaContent">
+            <div class="empty-chat">
+                <p>Clique no botão acima para sugerir uma receita baseada no que você tem na geladeira.</p>
+            </div>
+        </div>
+    </div>
+</aside>
 
 <script th:src="@{/js/home.js}"></script>
 </body>
