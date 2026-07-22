@@ -12,6 +12,7 @@ public enum CategoriaAlimento {
     SOBREMESAS,       // Doces, bolos, tortas, pudins
     OVOS,             // Ovos de galinha, codorna, etc.
     SOBRAS,
-    GRAOS
+    GRAOS,
+    FRUTAS
 
 }
