@@ -41,6 +41,14 @@ public class llmService {
                                 4. Liste o tempo de preparo estimado.
                                 5. Escreva o passo a passo de forma simples e direta.
                                 6. Se algum ingrediente for muito incompatível, sinta-se livre para sugerir um substituto simples.
+                                7. A mensagem passada deve seguir a seguinte regra: {
+                                [Título da receita]
+                                [Ingredientes que serão utilizados e quanto vai ser utilizado]
+                                [Tempo de preparo estimado]
+                                [Passo a passo]
+                                [Observação, se tiver]
+                                8. Só deve fornecer uma receita se todos os ingredientes necessários para a receita estiverem disponíveis no estoque.
+                                9. Não use asterísticos para deixar em negrito.
                 """.formatted(ingredientes);
 
         GptDTO payload = GptDTO.builder()
