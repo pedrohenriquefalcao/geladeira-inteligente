@@ -1,4 +1,4 @@
-Nesse projeto vou criar um "estoque", um inventário de uma geladeira, aonde vou guardar os alimentos, quantidade, categoria, data de validade, etc ta tudo no model, e vou usar IA pra gerar receitas baseado no que eu tiver na geladeira (IA acho que vou usar a gratuita do gemini)
+Nesse projeto vou criar um "estoque", um inventário de uma geladeira, aonde vou guardar os alimentos, quantidade, categoria, data de validade, etc ta tudo no model, e vou usar IA pra gerar receitas baseado no que eu tiver na geladeira
 
 inspiração: Samsung Evolution RB50
 
