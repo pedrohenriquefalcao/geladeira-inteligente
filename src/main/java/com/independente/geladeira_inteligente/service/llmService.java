@@ -85,7 +85,7 @@ public class llmService {
                 .build();
 
         return this.webClient.post()
-                .uri("chat/completions")
+                .uri("/chat/completions")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                 .bodyValue(payload)

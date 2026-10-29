@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geladeira Inteligente</title>
+    <title>Geladeira Inteligente | Seu estoque, mais inteligente</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
@@ -11,25 +11,69 @@
 <div class="container">
     <header>
         <div class="header-title">
-            <h1>Geladeira Inteligente</h1>
-            <p>Gerenciador inteligente de alimentos da sua geladeira</p>
+            <div class="brand-mark" aria-hidden="true">❄</div>
+            <div>
+                <p class="eyebrow">ORGANIZAÇÃO SEM DESPERDÍCIO</p>
+                <h1>Geladeira <span>Inteligente</span></h1>
+                <p>Seu estoque organizado. Suas próximas refeições inspiradas.</p>
+            </div>
         </div>
         <div class="header-actions">
-            <button class="btn-success" onclick="abrirSidebarReceita()">
-                <span class="icon">✨</span> Gerar Receita com meus Ingredientes
+            <button type="button" class="theme-toggle" id="themeToggle" aria-label="Ativar modo escuro" aria-pressed="false">
+                <span aria-hidden="true">☾</span><span class="theme-label">Modo escuro</span>
             </button>
         </div>
     </header>
 
-    <div class="main-content">
-        <div class="card">
-            <h2>Adicionar Alimento</h2>
+    <main>
+        <section class="recipe-hero" aria-labelledby="recipeTitle">
+            <div class="recipe-hero-copy">
+                <div class="section-kicker"><span class="sparkle" aria-hidden="true">✦</span> CHEF IA</div>
+                <h2 id="recipeTitle">Transforme o que você tem em algo delicioso.</h2>
+                <p>O Chef IA analisa seus ingredientes e cria uma receita prática para você aproveitar melhor cada item.</p>
+                <button type="button" class="btn-recipe" onclick="abrirSidebarReceita()">
+                    <span aria-hidden="true">✧</span> Criar minha receita
+                </button>
+            </div>
+            <div class="recipe-illustration" aria-hidden="true">🥗</div>
+        </section>
+
+        <section id="recipeCard" class="recipe-card" tabindex="-1" aria-labelledby="generatedRecipeTitle">
+            <div class="recipe-card-header">
+                <div>
+                    <div class="section-kicker">SUGESTÃO PERSONALIZADA</div>
+                    <h2 id="generatedRecipeTitle">Sua receita aparece aqui</h2>
+                </div>
+                <span class="ai-badge"><span aria-hidden="true">✦</span> IA</span>
+            </div>
+            <div id="loadingReceita" class="loading recipe-loading" style="display: none;" aria-live="polite">
+                <div class="spinner"></div>
+                <p>Analisando seus ingredientes e criando uma receita...</p>
+            </div>
+            <div id="receitaContent" aria-live="polite">
+                <div class="empty-recipe">
+                    <span class="empty-recipe-icon" aria-hidden="true">🍳</span>
+                    <p>Adicione alimentos e deixe o Chef IA cuidar da inspiração.</p>
+                    <small>Uma receita feita sob medida para sua geladeira.</small>
+                </div>
+            </div>
+        </section>
+
+        <div class="main-content">
+        <section class="card">
+            <div class="card-heading">
+                <div>
+                    <p class="section-kicker">ESTOQUE</p>
+                    <h2>Adicionar alimento</h2>
+                </div>
+                <span class="card-icon" aria-hidden="true">＋</span>
+            </div>
             <div id="formAlert" class="alert"></div>
 
             <form id="alimentoForm">
                 <div class="form-group">
                     <label for="nome">Nome do Alimento *</label>
-                    <input type="text" id="nome" name="nome" placeholder="Ex: Maçã Fuji" required>
+                    <input type="text" id="nome" name="nome" placeholder="Ex: Maçã Fuji" minlength="2" maxlength="80" autocomplete="off" required>
                 </div>
 
                 <div class="form-row">
@@ -54,7 +98,7 @@
 
                     <div class="form-group">
                         <label for="quantidade">Quantidade *</label>
-                        <input type="number" id="quantidade" name="quantidade" min="1" placeholder="Ex: 2" required>
+                        <input type="number" id="quantidade" name="quantidade" min="1" max="999" placeholder="Ex: 2" required>
                     </div>
                 </div>
 
@@ -68,10 +112,16 @@
                     <button type="submit" class="btn-primary">Salvar Alimento</button>
                 </div>
             </form>
-        </div>
+        </section>
 
-        <div class="card">
-            <h2>Meus Alimentos</h2>
+        <section class="card inventory-card">
+            <div class="card-heading">
+                <div>
+                    <p class="section-kicker">VISÃO GERAL</p>
+                    <h2>Meus alimentos</h2>
+                </div>
+                <span class="card-icon" aria-hidden="true">⌁</span>
+            </div>
             <div id="listAlert" class="alert"></div>
             <div id="loadingList" class="loading">
                 <div class="spinner"></div>
@@ -80,29 +130,10 @@
             <div class="table-container">
                 <div id="alimentosList"></div>
             </div>
+        </section>
         </div>
-    </div>
+    </main>
 </div>
-
-<div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebarReceita()"></div>
-
-<aside id="chatSidebar" class="sidebar">
-    <div class="sidebar-header">
-        <h2>👨‍🍳 Chef IA</h2>
-        <span class="close-sidebar" onclick="fecharSidebarReceita()">&times;</span>
-    </div>
-    <div class="sidebar-content">
-        <div id="loadingReceita" class="loading" style="display: none;">
-            <div class="spinner"></div>
-            <p>Analisando seus ingredientes e criando uma receita...</p>
-        </div>
-        <div id="receitaContent">
-            <div class="empty-chat">
-                <p>Clique no botão acima para sugerir uma receita baseada no que você tem na geladeira.</p>
-            </div>
-        </div>
-    </div>
-</aside>
 
 <div id="confirmModal" class="modal">
     <div class="modal-content confirm-modal">

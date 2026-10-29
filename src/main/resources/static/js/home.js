@@ -5,7 +5,34 @@ let alimentoEdit = null;
 document.addEventListener('DOMContentLoaded', () => {
     carregarAlimentos();
     document.getElementById('alimentoForm').addEventListener('submit', handleFormSubmit);
+    configurarTema();
+    configurarValidadeMinima();
 });
+
+function configurarTema() {
+    const temaSalvo = localStorage.getItem('geladeira-theme');
+    const temaInicial = temaSalvo === 'dark' ? 'dark' : 'light';
+    aplicarTema(temaInicial);
+    document.getElementById('themeToggle').addEventListener('click', () => {
+        aplicarTema(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+    });
+}
+
+function aplicarTema(tema) {
+    const toggle = document.getElementById('themeToggle');
+    document.documentElement.dataset.theme = tema;
+    toggle.setAttribute('aria-pressed', tema === 'dark');
+    toggle.setAttribute('aria-label', tema === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro');
+    toggle.querySelector('span').textContent = tema === 'dark' ? '☀' : '☾';
+    toggle.querySelector('.theme-label').textContent = tema === 'dark' ? 'Modo claro' : 'Modo escuro';
+    localStorage.setItem('geladeira-theme', tema);
+}
+
+function configurarValidadeMinima() {
+    const dataMinima = new Date();
+    dataMinima.setDate(dataMinima.getDate() + 1);
+    document.getElementById('validade').min = dataMinima.toISOString().split('T')[0];
+}
 
 function carregarAlimentos() {
     document.getElementById('loadingList').style.display = 'block';
@@ -92,9 +119,9 @@ function exibirAlimentos(alimentos) {
 function handleFormSubmit(e) {
     e.preventDefault();
 
-    const nome = document.getElementById('nome').value;
+    const nome = document.getElementById('nome').value.trim();
     const categoria = document.getElementById('categoria').value;
-    const quantidade = parseInt(document.getElementById('quantidade').value);
+    const quantidade = parseInt(document.getElementById('quantidade').value, 10);
     const validade = document.getElementById('validade').value;
 
     const [ano, mes, dia] = validade.split('-');
@@ -102,8 +129,27 @@ function handleFormSubmit(e) {
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
 
-    if (dataSelecionada <= hoje) {
+    if (!nome || nome.length < 2) {
+        mostrarAlerta('formAlert', 'Informe um nome de alimento válido.', 'warning');
+        document.getElementById('nome').focus();
+        return;
+    }
+
+    if (!categoria) {
+        mostrarAlerta('formAlert', 'Selecione uma categoria para o alimento.', 'warning');
+        document.getElementById('categoria').focus();
+        return;
+    }
+
+    if (!Number.isInteger(quantidade) || quantidade < 1 || quantidade > 999) {
+        mostrarAlerta('formAlert', 'A quantidade deve estar entre 1 e 999.', 'warning');
+        document.getElementById('quantidade').focus();
+        return;
+    }
+
+    if (!validade || dataSelecionada <= hoje) {
         mostrarAlerta('formAlert', 'A data de validade deve ser MAIOR que o dia atual.', 'warning');
+        document.getElementById('validade').focus();
         return;
     }
 
@@ -193,15 +239,12 @@ function limparFormulario() {
 }
 
 function abrirSidebarReceita() {
-    document.getElementById('chatSidebar').classList.add('open');
-    document.getElementById('sidebarOverlay').classList.add('open');
-
+    document.getElementById('recipeCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
     gerarReceita();
 }
 
 function fecharSidebarReceita() {
-    document.getElementById('chatSidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.remove('open');
+    document.getElementById('recipeCard').focus();
 }
 
 function gerarReceita() {
