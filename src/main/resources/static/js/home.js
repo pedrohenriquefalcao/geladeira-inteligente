@@ -38,15 +38,14 @@ function carregarAlimentos() {
     document.getElementById('loadingList').style.display = 'block';
     document.getElementById('alimentosList').innerHTML = '';
 
-    fetch(`${API_BASE}/listar/todos`)
-        .then(response => response.json())
+    fetchJson(`${API_BASE}/listar/todos`)
         .then(data => {
             document.getElementById('loadingList').style.display = 'none';
             exibirAlimentos(data);
         })
         .catch(error => {
             document.getElementById('loadingList').style.display = 'none';
-            mostrarAlerta('listAlert', 'Erro ao carregar alimentos: ' + error.message, 'danger');
+            mostrarAlerta('listAlert', error.message, 'danger');
         });
 }
 
@@ -98,11 +97,11 @@ function exibirAlimentos(alimentos) {
 
         html += `
             <tr>
-                <td style="font-weight: 500;">${alimento.nome}</td>
-                <td><span style="background: var(--bg-color); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; border: 1px solid var(--border);">${alimento.categoria}</span></td>
-                <td>${alimento.quantidade}</td>
-                <td>${validadeHtml}</td>
-                <td>
+                <td data-label="Nome"><strong>${escapeHtml(alimento.nome)}</strong></td>
+                <td data-label="Categoria"><span class="category-badge">${escapeHtml(alimento.categoria)}</span></td>
+                <td data-label="Quantidade">${alimento.quantidade}</td>
+                <td data-label="Validade">${validadeHtml}</td>
+                <td data-label="Ações">
                     <div class="actions">
                         <button class="btn-edit" onclick="editarAlimento(${alimento.id})">Editar</button>
                         <button class="btn-danger" onclick="deletarAlimento(${alimento.id})">Excluir</button>
@@ -158,15 +157,11 @@ function handleFormSubmit(e) {
     const url = alimentoEdit ? `${API_BASE}/alterar/${alimentoEdit}` : `${API_BASE}/salvar`;
     const metodo = alimentoEdit ? 'PUT' : 'POST';
 
-    fetch(url, {
+    fetchJson(url, {
         method: metodo,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(alimento)
     })
-        .then(response => {
-            if (!response.ok) throw new Error('Erro na resposta do servidor');
-            return response.json();
-        })
         .then(() => {
             const mensagem = alimentoEdit ? 'Alimento atualizado!' : 'Alimento adicionado!';
             mostrarAlerta('formAlert', mensagem, 'success');
@@ -174,13 +169,12 @@ function handleFormSubmit(e) {
             carregarAlimentos();
         })
         .catch(error => {
-            mostrarAlerta('formAlert', 'Erro ao salvar: ' + error.message, 'danger');
+            mostrarAlerta('formAlert', error.message, 'danger');
         });
 }
 
 function editarAlimento(id) {
-    fetch(`${API_BASE}/listar/${id}`)
-        .then(response => response.json())
+    fetchJson(`${API_BASE}/listar/${id}`)
         .then(alimento => {
             alimentoEdit = id;
             document.getElementById('nome').value = alimento.nome;
@@ -192,7 +186,7 @@ function editarAlimento(id) {
             document.getElementById('nome').focus();
         })
         .catch(error => {
-            mostrarAlerta('listAlert', 'Erro ao carregar dados: ' + error.message, 'danger');
+            mostrarAlerta('listAlert', error.message, 'danger');
         });
 }
 
@@ -211,17 +205,15 @@ function fecharModalConfirmacao() {
 document.getElementById('btnConfirmarExclusao').addEventListener('click', () => {
     if (!idParaDeletar) return;
 
-    fetch(`${API_BASE}/deletar/${idParaDeletar}`, { method: 'DELETE' })
-        .then(response => {
-            if (!response.ok) throw new Error('Erro ao comunicar com o servidor');
-
+    fetchJson(`${API_BASE}/deletar/${idParaDeletar}`, { method: 'DELETE' })
+        .then(() => {
             fecharModalConfirmacao();
             mostrarAlerta('listAlert', 'Alimento removido.', 'success');
             carregarAlimentos();
         })
         .catch(error => {
             fecharModalConfirmacao();
-            mostrarAlerta('listAlert', 'Erro ao excluir: ' + error.message, 'danger');
+            mostrarAlerta('listAlert', error.message, 'danger');
         });
 });
 
@@ -251,19 +243,53 @@ function gerarReceita() {
     document.getElementById('loadingReceita').style.display = 'block';
     document.getElementById('receitaContent').innerHTML = '';
 
-    fetch(`${API_RECEITA}/gerar`, { method: 'POST' })
-        .then(response => {
-            if (!response.ok) throw new Error('Falha ao comunicar com a IA');
-            return response.text();
-        })
+    fetchText(`${API_RECEITA}/gerar`, { method: 'POST' })
         .then(receita => {
             document.getElementById('loadingReceita').style.display = 'none';
             document.getElementById('receitaContent').innerHTML = `<div class="receita-content">${escapeHtml(receita)}</div>`;
         })
         .catch(error => {
             document.getElementById('loadingReceita').style.display = 'none';
-            document.getElementById('receitaContent').innerHTML = `<div class="alert alert-danger" style="display:block; margin-top: 1rem;">Erro: ${error.message}</div>`;
+            document.getElementById('receitaContent').innerHTML = `<div class="alert alert-danger" style="display:block; margin-top: 1rem;">${escapeHtml(error.message)}</div>`;
         });
+}
+
+async function fetchJson(url, options = {}) {
+    const response = await fetch(url, options);
+    const body = await response.text();
+    let data = null;
+    try {
+        data = body ? JSON.parse(body) : null;
+    } catch (error) {
+        console.error('Resposta JSON inválida', { url, status: response.status, body });
+    }
+
+    if (!response.ok) {
+        const message = data && data.message
+            ? data.message
+            : `Não foi possível concluir a operação (HTTP ${response.status}).`;
+        console.error('Erro da API', { url, status: response.status, code: data && data.code, message });
+        throw new Error(message);
+    }
+
+    return data;
+}
+
+async function fetchText(url, options = {}) {
+    const response = await fetch(url, options);
+    const body = await response.text();
+    if (!response.ok) {
+        let message = `Não foi possível gerar a receita (HTTP ${response.status}).`;
+        try {
+            const data = body ? JSON.parse(body) : null;
+            if (data && data.message) message = data.message;
+        } catch (error) {
+            console.error('Resposta de erro inválida', { url, status: response.status, body });
+        }
+        console.error('Erro da API de receita', { url, status: response.status, body });
+        throw new Error(message);
+    }
+    return body;
 }
 
 function mostrarAlerta(elementId, mensagem, tipo) {

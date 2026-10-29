@@ -5,6 +5,8 @@ import com.independente.geladeira_inteligente.dto.GptDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -15,6 +17,7 @@ import java.util.List;
 @Service
 public class llmService {
 
+    private static final Logger log = LoggerFactory.getLogger(llmService.class);
     private final WebClient webClient;
 
     @Value("${GROQ_API_KEY:${API_KEY:}}")
@@ -32,6 +35,7 @@ public class llmService {
 
     public Mono<String> obterSugestaoReceita(String ingredientes) {
         if (apiKey == null || apiKey.isEmpty()) {
+            log.error("Geração de receita recusada: GROQ_API_KEY/API_KEY não configurada.");
             return Mono.error(new IllegalStateException("API KEY não configurada"));
         }
 
@@ -59,10 +63,12 @@ public class llmService {
         return enviarRequisicao(prompt, primaryModel)
                 .onErrorResume(WebClientResponseException.class, e -> {
                     if (e.getResponseBodyAsString().contains("model_not_found")) {
-                        System.err.println("Modelo " + primaryModel + " indisponível. Tentando modelo reserva...");
+                        log.warn("Modelo {} indisponível. Tentando modelo reserva.", primaryModel);
                         return tentarFallbacks(prompt, 0);
                     }
-                    return Mono.just("Erro da API Groq: " + e.getResponseBodyAsString());
+                    log.error("Groq recusou a geração da receita: status={}, resposta={}",
+                            e.getStatusCode(), e.getResponseBodyAsString());
+                    return Mono.just("Não foi possível gerar a receita agora. A IA recusou a solicitação; tente novamente em instantes.");
                 });
     }
 
@@ -72,10 +78,13 @@ public class llmService {
         }
 
         String nextModel = fallbackModels.get(index).trim();
-        System.out.println("Tentando modelo fallback: " + nextModel);
+        log.info("Tentando modelo fallback: {}", nextModel);
 
         return enviarRequisicao(prompt, nextModel)
-                .onErrorResume(WebClientResponseException.class, e -> tentarFallbacks(prompt, index + 1));
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    log.warn("Modelo fallback {} falhou: status={}", nextModel, e.getStatusCode());
+                    return tentarFallbacks(prompt, index + 1);
+                });
     }
 
     private Mono<String> enviarRequisicao(String prompt, String model) {
