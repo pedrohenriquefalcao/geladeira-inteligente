@@ -21,7 +21,10 @@ public class llmService {
     private String apiKey;
 
     @Value("${llm.api.model:llama-3.1-8b-instant}")
-    private String model;
+    private String primaryModel;
+
+    @Value("#{'${llm.api.fallback-models:mixtral-8x7b-32768}'.split(',')}")
+    private List<String> fallbackModels;
 
     public llmService(WebClient webClient) {
         this.webClient = webClient;
@@ -29,7 +32,7 @@ public class llmService {
 
     public Mono<String> obterSugestaoReceita(String ingredientes) {
         if (apiKey == null || apiKey.isEmpty()) {
-            return Mono.error(new IllegalStateException("API KEY da Groq não foi configurada."));
+            return Mono.error(new IllegalStateException("API KEY não configurada"));
         }
 
         String prompt = """
@@ -37,7 +40,7 @@ public class llmService {
                 Crie uma receita criativa e saborosa utilizando prioritariamente os seguintes ingredientes: %s.
                 
                 Siga as seguintes regras:
-                1. Quero que você justifique sempre o por que de ter escolhido a receita (exemplo: como você tem {ingrediente} e {ingrediente}, podemos fazer esta receita).
+                1. Quero que você justifique sempre o por que de ter escolhido a receita.
                 2. Liste todos os ingredientes que você encontrou na relação de dados. Nome e quantidade.
                 3. Dê um nome chamativo para a receita.
                 4. Liste o tempo de preparo estimado.
@@ -53,13 +56,36 @@ public class llmService {
                 9. Não use asterísticos para deixar em negrito.
                 """.formatted(ingredientes);
 
+        return enviarRequisicao(prompt, primaryModel)
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    if (e.getResponseBodyAsString().contains("model_not_found")) {
+                        System.err.println("Modelo " + primaryModel + " indisponível. Tentando modelo reserva...");
+                        return tentarFallbacks(prompt, 0);
+                    }
+                    return Mono.just("Erro da API Groq: " + e.getResponseBodyAsString());
+                });
+    }
+
+    private Mono<String> tentarFallbacks(String prompt, int index) {
+        if (index >= fallbackModels.size()) {
+            return Mono.just("Erro: Nenhum modelo configurado está disponível no momento na Groq.");
+        }
+
+        String nextModel = fallbackModels.get(index).trim();
+        System.out.println("Tentando modelo fallback: " + nextModel);
+
+        return enviarRequisicao(prompt, nextModel)
+                .onErrorResume(WebClientResponseException.class, e -> tentarFallbacks(prompt, index + 1));
+    }
+
+    private Mono<String> enviarRequisicao(String prompt, String model) {
         GptDTO payload = GptDTO.builder()
                 .model(model)
                 .messages(List.of(new GptDTO.Message("user", prompt)))
                 .build();
 
         return this.webClient.post()
-                .uri("/chat/completions")
+                .uri("chat/completions")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                 .bodyValue(payload)
@@ -71,14 +97,6 @@ public class llmService {
                         .path("message")
                         .path("content")
                         .asText()
-                )
-                .onErrorResume(WebClientResponseException.class, e -> {
-                    String corpoDoErro = e.getResponseBodyAsString();
-                    System.err.println("ERRO DETALHADO DA GROQ: " + corpoDoErro);
-                    return Mono.just("Erro na resposta da API Groq: " + corpoDoErro);
-                })
-                .onErrorResume(Exception.class, e -> {
-                    return Mono.just("Erro genérico na chamada da IA: " + e.getMessage());
-                });
+                );
     }
 }
