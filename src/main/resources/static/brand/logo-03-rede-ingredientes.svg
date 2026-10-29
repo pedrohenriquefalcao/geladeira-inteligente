@@ -1,0 +1,11 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">Geladeira Inteligente - Rede de ingredientes</title>
+  <g fill="none" stroke="currentColor" stroke-linecap="round">
+    <path d="M25 68Q30 46 50 50T75 27" stroke-width="4"/>
+    <path d="M25 68Q48 81 50 50" opacity=".45" stroke-width="2.5"/>
+  </g>
+  <circle cx="25" cy="68" r="8" fill="currentColor"/>
+  <circle cx="50" cy="50" r="12" fill="currentColor"/>
+  <circle cx="75" cy="27" r="7" fill="currentColor"/>
+  <circle cx="50" cy="50" r="4" fill="white"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">Geladeira Inteligente - Floco modular</title>
+  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M50 17v66M21.4 33.5l57.2 33M21.4 66.5l57.2-33" stroke-width="8"/>
+    <path d="M50 17v13M50 70v13M21.4 33.5l11.3 6.5M67.3 60l11.3 6.5M21.4 66.5l11.3-6.5M67.3 40l11.3-6.5" stroke-width="3"/>
+  </g>
+  <circle cx="50" cy="50" r="7" fill="currentColor"/>
+</svg>

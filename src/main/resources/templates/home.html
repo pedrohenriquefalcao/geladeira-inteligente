@@ -3,6 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#25382D">
+    <meta name="application-name" content="Geladeira Inteligente">
+    <meta name="description" content="Geladeira Inteligente: organize seus alimentos e descubra receitas com o Chef IA.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Geladeira Inteligente | Seu estoque, mais inteligente">
+    <meta property="og:description" content="Organize sua geladeira e transforme seus ingredientes em receitas.">
+    <meta property="og:image" content="/brand/geladeira-inteligente-logo.svg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Geladeira Inteligente">
+    <meta name="twitter:description" content="Organize sua geladeira e descubra receitas com o Chef IA.">
+    <link rel="icon" type="image/svg+xml" th:href="@{/brand/favicon.svg}">
+    <link rel="apple-touch-icon" th:href="@{/brand/favicon.svg}">
     <title>Geladeira Inteligente | Seu estoque, mais inteligente</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/home.css}">
@@ -11,7 +23,9 @@
 <div class="container">
     <header>
         <div class="header-title">
-            <div class="brand-mark" aria-hidden="true">❄</div>
+            <div class="brand-mark">
+                <img th:src="@{/brand/logo-01-floco-modular.svg}" alt="Geladeira Inteligente">
+            </div>
             <div>
                 <p class="eyebrow">ORGANIZAÇÃO SEM DESPERDÍCIO</p>
                 <h1>Geladeira <span>Inteligente</span></h1>

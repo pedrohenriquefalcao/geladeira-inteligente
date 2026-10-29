@@ -1,0 +1,10 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">Geladeira Inteligente - Porta smart</title>
+  <g fill="none" stroke="currentColor" stroke-linejoin="round">
+    <rect x="25" y="13" width="50" height="74" rx="9" stroke-width="5"/>
+    <path d="M25 35h50M25 67h50" stroke-width="3"/>
+    <path d="M63 48h1" stroke-linecap="round" stroke-width="7"/>
+  </g>
+  <circle cx="50" cy="51" r="10" fill="currentColor" opacity=".18"/>
+  <path d="M50 43v16M42 51h16" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+</svg>

@@ -1,0 +1,22 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="logo-title logo-description">
+  <title id="logo-title">Geladeira Inteligente</title>
+  <desc id="logo-description">Logo minimalista com um floco modular laranja e verde sobre fundo neutro.</desc>
+  <rect width="1200" height="800" rx="48" fill="#F7F5F0"/>
+  <g transform="translate(600 294)">
+    <circle r="126" fill="none" stroke="#6D7F57" stroke-width="2" stroke-dasharray="3 15" opacity=".35">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="24s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="103" fill="#FFFDF9" stroke="#E4E0D7" stroke-width="2"/>
+    <g fill="none" stroke="#EF6C43" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0-67V67M-49-29l98 58M-49 29l98-58" stroke-width="10"/>
+      <path d="M0-67v22M0 45v22M-49-29l19 11M30 18l19 11M-49 29l19-11M30-18l19-11" stroke="#6D7F57" stroke-width="4"/>
+    </g>
+    <circle r="10" fill="#25382D">
+      <animate attributeName="r" values="10;13;10" dur="3s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  <g text-anchor="middle" font-family="Inter, Arial, sans-serif">
+    <text x="600" y="520" fill="#25382D" font-size="54" font-weight="700" letter-spacing="-2">Geladeira <tspan fill="#EF6C43">Inteligente</tspan></text>
+    <text x="600" y="568" fill="#6D7F57" font-size="16" font-weight="700" letter-spacing="5">ORGANIZAÇÃO SEM DESPERDÍCIO</text>
+  </g>
+</svg>
